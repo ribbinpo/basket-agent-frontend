@@ -4,11 +4,13 @@ import { Page } from "@/components/Page";
 import { List, Text } from "@telegram-apps/telegram-ui";
 
 import "./styles.css";
-import { getAccessToken } from "@privy-io/react-auth";
+import { getAccessToken, usePrivy } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 
 export default function ConnectWalletPage() {
   const [token, setToken] = useState<string | null>(null);
+
+  const { login, authenticated } = usePrivy();
 
   useEffect(() => {
     getAccessToken().then((token) => {
@@ -20,7 +22,10 @@ export default function ConnectWalletPage() {
   return (
     <Page>
       <List>
-        <Text>Token: {token}</Text>
+        {authenticated && <Text>Token: {token}</Text>}
+        <button onClick={() => login({ loginMethods: ["telegram"] })}>
+          Login with Telegram
+        </button>
       </List>
     </Page>
   );
