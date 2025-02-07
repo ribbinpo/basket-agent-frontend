@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 export default function ConnectWalletPage() {
   const [token, setToken] = useState<string | null>(null);
 
-  const { login, authenticated } = usePrivy();
+  const { authenticated, user } = usePrivy();
 
   useEffect(() => {
     getAccessToken().then((token) => {
@@ -22,10 +22,13 @@ export default function ConnectWalletPage() {
   return (
     <Page>
       <List>
-        {authenticated && <Text>Token: {token}</Text>}
-        <button onClick={() => login({ loginMethods: ["telegram"] })}>
-          Login with Telegram
-        </button>
+        {authenticated && (
+          <div>
+            <Text>Access Token: {token}</Text>
+            <Text>Telegram ID: {user?.telegram?.telegramUserId}</Text>
+            <Text>Telegram Username: {user?.telegram?.username}</Text>
+          </div>
+        )}
       </List>
     </Page>
   );
