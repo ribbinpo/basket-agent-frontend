@@ -1,6 +1,6 @@
 "use client";
 
-import { type PropsWithChildren, useEffect } from "react";
+import { type PropsWithChildren, useEffect, useState } from "react";
 import {
   initData,
   miniApp,
@@ -19,7 +19,6 @@ import { setLocale } from "@/core/i18n/locale";
 import { init } from "@/core/init";
 
 import "./styles.css";
-import { initPrivy } from "@/core/privy/init";
 import { getAccessToken, usePrivy } from "@privy-io/react-auth";
 
 function RootInner({ children }: PropsWithChildren) {
@@ -43,6 +42,7 @@ function RootInner({ children }: PropsWithChildren) {
   const initDataUser = useSignal(initData.user);
   const initDataRaw = useSignal(initData.raw);
   const { linkTelegram } = usePrivy();
+  const [token, setToken] = useState<string | null>(null);
 
   // Set the user locale.
   useEffect(() => {
@@ -53,7 +53,7 @@ function RootInner({ children }: PropsWithChildren) {
     if (initDataRaw && !isDev) {
       linkTelegram({ launchParams: { initDataRaw } });
       getAccessToken().then((token) => {
-        console.log(token);
+        setToken(token);
       });
     }
   }, [initDataRaw]);
@@ -64,6 +64,7 @@ function RootInner({ children }: PropsWithChildren) {
         appearance={isDark ? "dark" : "light"}
         platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
       >
+        <div>{token}</div>
         {children}
       </AppRoot>
     </TonConnectUIProvider>
